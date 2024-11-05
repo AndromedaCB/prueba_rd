@@ -28,19 +28,19 @@ def f_filmaciones_dia(df,day,column ):
     len_films = len(films_day)
     return f"{len_films} cantidad de películas fueron estrenadas en los días {day}"
 
-# def f_score_titulo( df, titulo ):
-#     #Filtra fila con el titulo de la pelicula
-#     titulo=titulo.title()
+def f_score_titulo( df, titulo ):
+    #Filtra fila con el titulo de la pelicula
+    titulo=titulo.title()
 
-#     film_row = df[ df["title"] == titulo]
+    film_row = df[ df["title"] == titulo]
 
-#     if film_row.empty:
-#         return f"Error: Película {titulo} no encontrada."
+    if film_row.empty:
+        return f"Error: Película {titulo} no encontrada."
     
-#     anio_estreno= film_row["release_date"].dt.year.values[0]
-#     score = film_row["popularity"].values[0]
+    anio_estreno= film_row["release_date"].dt.year.values[0]
+    score = film_row["popularity"].values[0]
 
-#     return f"La película '{titulo}' fue estrenada en el año {anio_estreno} con un score/popularidad de {score}"
+    return f"La película '{titulo}' fue estrenada en el año {anio_estreno} con un score/popularidad de {score}"
 
 # def f_votos_titulo( df, titulo ):
 
@@ -164,17 +164,16 @@ async def cantidad_filmaciones_dia(dia:str):
     """
     return {"message":f_filmaciones_dia(movie_api,dia,'release_date')}
 
-# @app.get("/Score_Titulo/{titulo}")
-# def Score_Titulo(titulo:str):
-#     """
-#     Input:
-#     - Titulo de la película. (str)
+@app.get("/Score_Titulo/{titulo}")
+async def Score_Titulo(titulo:str):
+    """
+    Input:
+    - Titulo de la película. (str)
 
-#     Output:
-#     - Mensaje: 'La película X fue estrenada en el año X con un score/popularidad de X.'
-#     """
-#     load_datasets()
-#     return {"message":f_score_titulo(movie_api,titulo)}
+    Output:
+    - Mensaje: 'La película X fue estrenada en el año X con un score/popularidad de X.'
+    """
+    return {"message":f_score_titulo(movie_api,titulo)}
 
 # @app.get("/Votos_Titulo/{titulo}")
 # def Votos_Titulo(titulo:str):
