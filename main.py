@@ -116,45 +116,45 @@ movies_filt = pd.read_parquet('datasets/movie_modelo.parquet')
 async def ruta_prueba():
     return "Hola"
 
-# @app.get("/Cantidad_Filmaciones_Mes/{mes}")
-# def cantidad_filmaciones_mes(mes: str):
-#     """
-#     Input:
-#     - Mes del año. (str)
+@app.get("/Cantidad_Filmaciones_Mes/{mes}")
+async def cantidad_filmaciones_mes(mes: str):
+    """
+    Input:
+    - Mes del año. (str)
 
-#     Output:
-#     - Mensaje: 'X cantidad de películas fueron estrenadas en el mes de X.'
-#     """
+    Output:
+    - Mensaje: 'X cantidad de películas fueron estrenadas en el mes de X.'
+    """
 
-#     # Diccionario de mapeo para los meses
-#     meses = {
-#         1: 'Enero', 2: 'Febrero', 3: 'Marzo', 4: 'Abril', 5: 'Mayo',
-#         6: 'Junio', 7: 'Julio', 8: 'Agosto', 9: 'Septiembre',
-#         10: 'Octubre', 11: 'Noviembre', 12: 'Diciembre'
-#     }
+    # Diccionario de mapeo para los meses
+    meses = {
+        1: 'Enero', 2: 'Febrero', 3: 'Marzo', 4: 'Abril', 5: 'Mayo',
+        6: 'Junio', 7: 'Julio', 8: 'Agosto', 9: 'Septiembre',
+        10: 'Octubre', 11: 'Noviembre', 12: 'Diciembre'
+    }
     
-#     # Convertir el nombre del mes a capitalizado para asegurar la correspondencia
-#     mes = mes.capitalize()
+    # Convertir el nombre del mes a capitalizado para asegurar la correspondencia
+    mes = mes.capitalize()
     
-#     # Verificar si el nombre del mes es válido
-#     if mes not in meses.values():
-#         return {"message": f"Error: {mes} no es un mes válido. Ingrese un mes en español."}
+    # Verificar si el nombre del mes es válido
+    if mes not in meses.values():
+        return {"message": f"Error: {mes} no es un mes válido. Ingrese un mes en español."}
     
-#     # Obtener el número del mes
-#     mes_numero = {v: k for k, v in meses.items()}[mes]
+    # Obtener el número del mes
+    mes_numero = {v: k for k, v in meses.items()}[mes]
     
-#     # Filtrar el DataFrame para el mes deseado
-#     movie_api['release_mes'] = movie_api['release_date'].dt.month  # Extraer el número del mes
-#     films_mes = movie_api[movie_api['release_mes'] == mes_numero]
+    # Filtrar el DataFrame para el mes deseado
+    movie_api['release_mes'] = movie_api['release_date'].dt.month  # Extraer el número del mes
+    films_mes = movie_api[movie_api['release_mes'] == mes_numero]
     
-#     # Contar la cantidad de películas en el mes
-#     len_films = len(films_mes)
+    # Contar la cantidad de películas en el mes
+    len_films = len(films_mes)
     
-#     return {"message": f"{len_films} cantidad de películas fueron estrenadas en el mes de {mes}"}
+    return {"message": f"{len_films} cantidad de películas fueron estrenadas en el mes de {mes}"}
 
 
 # @app.get("/Cantidad_Filmacione_Dia/{dia}")
-# def cantidad_filmaciones_dia(dia:str):
+# async def cantidad_filmaciones_dia(dia:str):
 #     """
 #     Input:
 #     - Día de la semana. (str)
