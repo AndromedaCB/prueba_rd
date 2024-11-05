@@ -3,7 +3,7 @@ import pandas as pd
 import uvicorn
 import os
 from fastapi.responses import JSONResponse
-from Modelo.modelo_ML import recomendacion  # Importar la función de recomendación
+# from Modelo.modelo_ML import recomendacion  # Importar la función de recomendación
 
 
 app = FastAPI()
