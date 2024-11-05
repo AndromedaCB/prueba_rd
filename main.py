@@ -8,10 +8,10 @@ from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
-# movie_api = pd.read_parquet('datasets/movie_dataset_final.parquet', engine= 'pyarrow')
-# movie_cast = pd.read_parquet('datasets/credits_cast.parquet', engine= 'pyarrow')
-# movie_crew = pd.read_parquet('datasets/credits_crew.parquet', engine= 'pyarrow')
-# movies_filt = pd.read_parquet('datasets/movie_modelo.parquet')
+movie_api = pd.read_parquet('datasets/movie_dataset_final.parquet', engine= 'pyarrow')
+movie_cast = pd.read_parquet('datasets/credits_cast.parquet', engine= 'pyarrow')
+movie_crew = pd.read_parquet('datasets/credits_crew.parquet', engine= 'pyarrow')
+movies_filt = pd.read_parquet('datasets/movie_modelo.parquet')
 
 #FUNCIONES
 # def f_filmaciones_dia(df,day,column ):
