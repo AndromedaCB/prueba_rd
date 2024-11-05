@@ -8,50 +8,12 @@ from Modelo.modelo_ML import recomendacion  # Importar la función de recomendac
 
 app = FastAPI()
 
-
-if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8000))  # Usa el puerto de entorno, o el 8000 como default
-    uvicorn.run(app, host="0.0.0.0", port=port)
-
-# Variables globales para los datasets, inicialmente vacías
-movie_api = None
-movie_cast = None
-movie_crew = None
-movies_filt = None
-
-# Función para cargar los datasets cuando sean necesarios
-def load_datasets(dataset_name=None):
-    global movie_api, movie_cast, movie_crew, movies_filt
-    
-    if dataset_name == 'movie_api' and movie_api is None:
-        movie_api = pd.read_parquet('datasets/movie_dataset_final.parquet', engine='pyarrow')
-    elif dataset_name == 'movie_cast' and movie_cast is None:
-        movie_cast = pd.read_parquet('datasets/credits_cast.parquet', engine='pyarrow')
-    elif dataset_name == 'movie_crew' and movie_crew is None:
-        movie_crew = pd.read_parquet('datasets/credits_crew.parquet', engine='pyarrow')
-    elif dataset_name == 'movies_filt' and movies_filt is None:
-        movies_filt = pd.read_parquet('datasets/movie_modelo.parquet')
-
-    # Opcional: Para liberar memoria, puedes eliminar datasets ya cargados si no se necesitan
-    # if dataset_name and dataset_name in ['movie_api', 'movie_cast', 'movie_crew', 'movies_filt']:
-    #     unload_datasets()
-
-def unload_datasets():
-    global movie_api, movie_cast, movie_crew, movies_filt
-    # Reiniciar las variables a None para liberar memoria
-    movie_api = None
-    movie_cast = None
-    movie_crew = None
-    movies_filt = None
+# movie_api = pd.read_parquet('datasets/movie_dataset_final.parquet', engine= 'pyarrow')
+# movie_cast = pd.read_parquet('datasets/credits_cast.parquet', engine= 'pyarrow')
+# movie_crew = pd.read_parquet('datasets/credits_crew.parquet', engine= 'pyarrow')
+# movies_filt = pd.read_parquet('datasets/movie_modelo.parquet')
 
 #FUNCIONES
-# def f_filmaciones_mes(df, mes, column):
-#     mes= mes.capitalize()
-#     pelis_mes= df[df[column]==mes ]   
-
-#     len_films = len(pelis_mes)
-#     return f"{len_films} cantidad de películas fueron estrenadas en el mes de {mes}"
-
 # def f_filmaciones_dia(df,day,column ):
 #     dias_semana = {0:'Lunes', 1:'Martes', 2:'Miercoles', 3:'Jueves', 4: 'Viernes', 
 #                5:'Sabado', 6:'Domingo'}
@@ -163,8 +125,6 @@ async def ruta_prueba():
 #     Output:
 #     - Mensaje: 'X cantidad de películas fueron estrenadas en el mes de X.'
 #     """
-#     # Cargar los datos
-#     load_datasets()  
 
 #     # Diccionario de mapeo para los meses
 #     meses = {
@@ -202,7 +162,6 @@ async def ruta_prueba():
 #     Output:
 #     - Mensaje: 'X cantidad de películas fueron estrenadas en los días X.'
 #     """
-#     load_datasets()
 #     return {"message":f_filmaciones_dia(movie_api,dia,'release_date')}
 
 # @app.get("/Score_Titulo/{titulo}")
