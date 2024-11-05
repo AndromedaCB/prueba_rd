@@ -14,19 +14,19 @@ movie_crew = pd.read_parquet('datasets/credits_crew.parquet', engine= 'pyarrow')
 movies_filt = pd.read_parquet('datasets/movie_modelo.parquet')
 
 #FUNCIONES
-# def f_filmaciones_dia(df,day,column ):
-#     dias_semana = {0:'Lunes', 1:'Martes', 2:'Miercoles', 3:'Jueves', 4: 'Viernes', 
-#                5:'Sabado', 6:'Domingo'}
-#     day = day.capitalize()
+def f_filmaciones_dia(df,day,column ):
+    dias_semana = {0:'Lunes', 1:'Martes', 2:'Miercoles', 3:'Jueves', 4: 'Viernes', 
+               5:'Sabado', 6:'Domingo'}
+    day = day.capitalize()
 
-#     if day not in dias_semana.values():
-#         return f"Error: {day} no es un día válido. Ingrese un día de la semana en español."
+    if day not in dias_semana.values():
+        return f"Error: {day} no es un día válido. Ingrese un día de la semana en español."
 
 
-#     df['release_dia'] =df[column].dt.day_of_week.map(dias_semana)
-#     films_day =  df[df['release_dia']== day]
-#     len_films = len(films_day)
-#     return f"{len_films} cantidad de películas fueron estrenadas en los días {day}"
+    df['release_dia'] =df[column].dt.day_of_week.map(dias_semana)
+    films_day =  df[df['release_dia']== day]
+    len_films = len(films_day)
+    return f"{len_films} cantidad de películas fueron estrenadas en los días {day}"
 
 # def f_score_titulo( df, titulo ):
 #     #Filtra fila con el titulo de la pelicula
@@ -153,16 +153,16 @@ async def cantidad_filmaciones_mes(mes: str):
     return {"message": f"{len_films} cantidad de películas fueron estrenadas en el mes de {mes}"}
 
 
-# @app.get("/Cantidad_Filmacione_Dia/{dia}")
-# async def cantidad_filmaciones_dia(dia:str):
-#     """
-#     Input:
-#     - Día de la semana. (str)
+@app.get("/Cantidad_Filmaciones_Dia/{dia}")
+async def cantidad_filmaciones_dia(dia:str):
+    """
+    Input:
+    - Día de la semana. (str)
 
-#     Output:
-#     - Mensaje: 'X cantidad de películas fueron estrenadas en los días X.'
-#     """
-#     return {"message":f_filmaciones_dia(movie_api,dia,'release_date')}
+    Output:
+    - Mensaje: 'X cantidad de películas fueron estrenadas en los días X.'
+    """
+    return {"message":f_filmaciones_dia(movie_api,dia,'release_date')}
 
 # @app.get("/Score_Titulo/{titulo}")
 # def Score_Titulo(titulo:str):
