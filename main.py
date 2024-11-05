@@ -42,24 +42,24 @@ def f_score_titulo( df, titulo ):
 
     return f"La película '{titulo}' fue estrenada en el año {anio_estreno} con un score/popularidad de {score}"
 
-# def f_votos_titulo( df, titulo ):
+def f_votos_titulo( df, titulo ):
 
-#     titulo=titulo.title()
-#     #Filtra fila con el titulo de la pelicula
-#     film_row = df[ df["title"] == titulo]
+    titulo=titulo.title()
+    #Filtra fila con el titulo de la pelicula
+    film_row = df[ df["title"] == titulo]
 
-#     if film_row.empty:
-#         return f"Error: Película {titulo} no encontrada."
+    if film_row.empty:
+        return f"Error: Película {titulo} no encontrada."
     
-#     anio_estreno= film_row["release_date"].dt.year.values[0]
-#     cant_voto= film_row["vote_count"].values[0]
-#     prom_voto = film_row["vote_average"].values[0]
+    anio_estreno= film_row["release_date"].dt.year.values[0]
+    cant_voto= film_row["vote_count"].values[0]
+    prom_voto = film_row["vote_average"].values[0]
 
-#     if cant_voto >=2000 :
-#         return f"La película {titulo} fue estrenada en el año {anio_estreno}. La misma cuenta con un total de {cant_voto} valoraciones, con un promedio de {prom_voto}"
+    if cant_voto >=2000 :
+        return f"La película {titulo} fue estrenada en el año {anio_estreno}. La misma cuenta con un total de {cant_voto} valoraciones, con un promedio de {prom_voto}"
 
-#     else:
-#         return f"La película {titulo} no cuenta con más de 2000 valoraciones. "
+    else:
+        return f"La película {titulo} no cuenta con más de 2000 valoraciones. "
 
 # def f_get_actor(df, actor):
 #     actor = actor.title()
@@ -175,17 +175,16 @@ async def Score_Titulo(titulo:str):
     """
     return {"message":f_score_titulo(movie_api,titulo)}
 
-# @app.get("/Votos_Titulo/{titulo}")
-# def Votos_Titulo(titulo:str):
-#     """
-#     Input:
-#     - Titulo de la película. (str)
+@app.get("/Votos_Titulo/{titulo}")
+async def Votos_Titulo(titulo:str):
+    """
+    Input:
+    - Titulo de la película. (str)
 
-#     Output:
-#     - Mensaje: 'La película X fue estrenada en el año X. La misma cuenta con un total de X valoraciones, con un promedio de X'
-#     """
-#     load_datasets()
-#     return {"message":f_votos_titulo(movie_api,titulo)}
+    Output:
+    - Mensaje: 'La película X fue estrenada en el año X. La misma cuenta con un total de X valoraciones, con un promedio de X'
+    """
+    return {"message":f_votos_titulo(movie_api,titulo)}
 
 # @app.get("/Get_Actor/{actor}")
 # def Get_Actor(actor:str):
