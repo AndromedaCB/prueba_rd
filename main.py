@@ -3,29 +3,15 @@ import pandas as pd
 import uvicorn
 import os
 from fastapi.responses import JSONResponse
-# from Modelo.modelo_ML import recomendacion  # Importar la función de recomendación
-
+from Modelo.modelo_ML import recomendacion  # Importar la función de recomendación
+from Modelo.modelo_ML import cosine_sim
 
 app = FastAPI()
 
 movie_api = pd.read_parquet('datasets/movie_dataset_final.parquet', engine= 'pyarrow')
 credits_cast = pd.read_parquet('datasets/credits_cast.parquet', engine= 'pyarrow')
 credits_crew = pd.read_parquet('datasets/credits_crew.parquet', engine= 'pyarrow')
-movies_filt = pd.read_parquet('datasets/movie_modelo.parquet')
-
-# # Funcion y declaracion de variables para carga de union de datasets (movie, crew y cast)
-# movie_cast = None
-# movie_crew = None
-
-# def load_datasets():
-#     global movie_cast, movie_crew
-
-#     # Unir los tres DataFrames en uno solo usando "id_movie" para los actores
-#     movie_cast = pd.merge(movie_api, credits_cast, on="id_movie", how="inner")
-    
-#     # Unir movie_dataset con crew para el equipo de producción
-#     movie_crew = pd.merge(movie_api,credits_crew, on="id_movie", how="inner")
-
+movies_filt = pd.read_parquet('datasets/movie_modelo.parquet', engine= 'pyarrow')
 
 #FUNCIONES
 def f_filmaciones_dia(df,day,column ):
@@ -255,20 +241,23 @@ async def Get_Director(director:str):
     return {"message":message}
 
 
-# @app.get("/Recomendacion/{titulo}")
-# def Recomendacion(titulo:str):
-#     """
-#     Input:
-#     - Titulo de la película (str)
+@app.get("/Recomendacion/{titulo}")
+def Recomendacion(titulo:str):
+    """
+    Input:
+    - Titulo de la película (str)
 
-#     Output:
-#     - Lista de películas recomendadas
-#     """
-#     load_datasets()
-#     lista_movies= recomendacion(titulo, movies_filt)
+    Output:
+    - Lista de películas recomendadas
+    """
+    lista_movies = recomendacion(titulo, cosine_sim, movies_filt)
 
-#     if lista_movies == 0: 
-#         return f"Error: Película '{titulo}' no encontrada en el dataset."
+    # for movie in funcion_ml:
+    # print(movie)
 
-#     return {"message":lista_movies}
+    # if lista_movies == 0: 
+    #     return f"Error: Película '{titulo}' no encontrada en el dataset."
+
+    return {"message":lista_movies}
+#
 
