@@ -106,40 +106,44 @@ def f_get_actor(df, df_cast, actor):
                     f"Con un promedio de {promedio} por filmación.")
     }
 
-# def f_get_director(df, name):
-#     name = name.title()
+def f_get_director(df_movies, df_crew, director_name):
+    # Convertimos el nombre del director a título para una comparación uniforme
+    director_name = director_name.title()
 
-#     # Dataframe solo de directores
-#     director_movie_crew =df[df["job_crew"]== 'Director']
+    # Filtrar solo directores en el dataset de crew
+    df_directors = df_crew[df_crew["job"] == 'Director']
 
-#     # Se obtiene el dataframe con columnas necesarias
-#     columnas = [ 'IdMovie', 'name_crew','return' ,'title','release_date','budget', 'revenue']
-#     director_movie_crew = director_movie_crew[columnas]
+    # Unir datasets usando la columna `id_movie`
+    merged_df = df_movies.merge(df_directors, on='id_movie', how='inner')
 
-#     # Se renombra columas
-#     colum_name = {'name_crew':'Nombre_director', 'title':'Titulo','release_date':'Fecha_Estreno','budget': 'Costo', 'revenue':'Recaudación', 'return':'Retorno'}
-#     director_movie_crew.rename(columns = colum_name, inplace = True)
+    # Filtrar el dataframe unido por el nombre del director
+    df_director_movies = merged_df[merged_df["name_dir"] == director_name]
 
-#     #Columna Ganancia
-#     director_movie_crew['Ganancia'] = director_movie_crew["Recaudación"] -director_movie_crew["Costo"]
+    if df_director_movies.empty:
+        return {"message": f"El director '{director_name}' no se encuentra en la base de datos. Por favor, ingrese otro nombre."}
 
-#     #Se filtra dataframe con el nombre del actor
-#     df_director = director_movie_crew[director_movie_crew["Nombre_director"] == name]
+    # Calcular el retorno total y el promedio de retorno
+    retorno_total = round(df_director_movies['return'].sum(), 2)
+    promedio_retorno = round(df_director_movies['return'].mean(), 2)
 
-#     #Se obtiene diccionario final 
-#     dict_director= df_director.drop( ['IdMovie','Nombre_director', 'Retorno' ], axis=1).to_dict(orient='records')
+    # Usar .apply() para crear la lista de películas con sus detalles
+    peliculas = df_director_movies.apply(
+        lambda row: {
+            "Titulo": row['title'],
+            "Fecha de Estreno": row['release_year'],
+            "Costo": row['budget'],
+            "Recaudación": row['revenue'],
+            "Ganancia Neta": row['revenue'] - row['budget'],
+            "Retorno": row['return']
+        }, axis=1 
+        ).tolist()
 
-#     if df_director.empty:
-#         return f"El director '{name}' no se encuentra en la base de datos. Ingrese otro por favor."
-
-
-#     prom_retorno = df_director['Retorno'].mean()
-
-#     return {
-#             'Director': name, 
-#             'Promedio Éxito': prom_retorno, 
-#             'Películas': dict_director
-#             }
+    return {
+        "Director": director_name,
+        "Retorno Total": retorno_total,
+        "Promedio Retorno": promedio_retorno,
+        "Películas": peliculas
+    }
 
 # API
 @app.get("/inicio")
@@ -229,19 +233,26 @@ async def Get_Actor(actor:str):
     return {"message":message}
 
 
-# @app.get("/Get_Director/{director}")
-# def Get_Director(director:str):
-#     """
-#     Input:
-#     - Nombre del director (str)
+@app.get("/Get_Director/{director}")
+async def Get_Director(director:str):
+    """
+    Input:
+    - Nombre del director (str)
 
-#     Output:
-#     - Nombre del director.
-#     - Promedio Éxito.
-#     - Lista de películas
-#      """
-#     load_datasets()
-#     return {"message":f_get_director(movie_crew,director)}
+    Output:
+    - Nombre del director.
+    - Promedio Éxito.
+    - Lista de películas
+        - Titulo
+        - Fecha de estreno
+        - Costo 
+        - Recaudación
+        - Ganancia Neta
+        - Retorno 
+
+     """
+    message = f_get_director(movie_api, credits_crew, director)
+    return {"message":message}
 
 
 # @app.get("/Recomendacion/{titulo}")
