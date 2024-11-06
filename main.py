@@ -9,9 +9,23 @@ from fastapi.responses import JSONResponse
 app = FastAPI()
 
 movie_api = pd.read_parquet('datasets/movie_dataset_final.parquet', engine= 'pyarrow')
-movie_cast = pd.read_parquet('datasets/credits_cast.parquet', engine= 'pyarrow')
-movie_crew = pd.read_parquet('datasets/credits_crew.parquet', engine= 'pyarrow')
+credits_cast = pd.read_parquet('datasets/credits_cast.parquet', engine= 'pyarrow')
+credits_crew = pd.read_parquet('datasets/credits_crew.parquet', engine= 'pyarrow')
 movies_filt = pd.read_parquet('datasets/movie_modelo.parquet')
+
+# # Funcion y declaracion de variables para carga de union de datasets (movie, crew y cast)
+# movie_cast = None
+# movie_crew = None
+
+# def load_datasets():
+#     global movie_cast, movie_crew
+
+#     # Unir los tres DataFrames en uno solo usando "id_movie" para los actores
+#     movie_cast = pd.merge(movie_api, credits_cast, on="id_movie", how="inner")
+    
+#     # Unir movie_dataset con crew para el equipo de producción
+#     movie_crew = pd.merge(movie_api,credits_crew, on="id_movie", how="inner")
+
 
 #FUNCIONES
 def f_filmaciones_dia(df,day,column ):
@@ -61,20 +75,36 @@ def f_votos_titulo( df, titulo ):
     else:
         return f"La película {titulo} no cuenta con más de 2000 valoraciones. "
 
-# def f_get_actor(df, actor):
-#     actor = actor.title()
+def f_get_actor(df, df_cast, actor):
+    actor = actor.title()
 
-#     #Se filtra dataframe con el nombre del actor
-#     df_actor = df[df["name_actor"] == actor]
+    # Filtrar el dataframe de actores con el nombre ingresado
+    df_actor  = df_cast[df_cast['name_actor'] == actor]
 
-#     if df_actor.empty:
-#         return f"El actor '{actor}' no se encuentra en la base de datos. Ingrese otro por favor."
-        
-#     cantidad_films = df_actor.shape[0]
-#     retorno = df ['return'].sum()
-#     promedio = round(retorno/cantidad_films , 6)
+    if df_actor .empty:
+        return {"message": f"El actor '{actor}' no se encuentra en la base de datos."}
 
-#     return f"El actor {actor} ha participado de {cantidad_films} cantidad de filmaciones. El mismo ha conseguido un retorno de {retorno} con un promedio de {promedio}"
+    # Se obtienen los ids de las películas en las que el actor ha participado
+    cantidad_peliculas = df_actor ['id_movie'].nunique()
+
+    # Obtener los ids de las películas
+    movies = df_actor ['id_movie'].unique()
+
+    # Coincidir con el dataframe de películas
+    verifcacion = df[df['id_movie'].isin(movies)]
+
+    # Calcular el retorno total sumando la columna 'return' de las películas
+    retorno = round(verifcacion['return'].sum(), 2)
+
+    # Calcular el promedio de retorno dividiendo el retorno total por la cantidad de películas
+    promedio = round(verifcacion['return'].mean(), 2)
+
+    # Retornar los resultados
+    return {
+        "message": (f"El actor {actor} ha participado de {cantidad_peliculas} filmaciones, "
+                    f"el mismo ha conseguido un retorno de {retorno} veces la inversión. "
+                    f"Con un promedio de {promedio} por filmación.")
+    }
 
 # def f_get_director(df, name):
 #     name = name.title()
@@ -186,17 +216,18 @@ async def Votos_Titulo(titulo:str):
     """
     return {"message":f_votos_titulo(movie_api,titulo)}
 
-# @app.get("/Get_Actor/{actor}")
-# def Get_Actor(actor:str):
-#     """
-#     Input:
-#     - Nombre del actor (str)
+@app.get("/Get_Actor/{actor}")
+async def Get_Actor(actor:str):
+    """
+    Input:
+    - Nombre del actor (str)
 
-#     Output:
-#     - Mensaje: 'El actor X ha participado de X cantidad de filmaciones, el mismo ha conseguido un retorno de X con un promedio de X por filmación'
-#      """
-#     load_datasets()
-#     return {"message":f_get_actor(movie_cast,actor)}
+    Output:
+    - Mensaje: 'El actor X ha participado de X cantidad de filmaciones, el mismo ha conseguido un retorno de X con un promedio de X por filmación'
+     """
+    message = f_get_actor(movie_api, credits_cast, actor)
+    return {"message":message}
+
 
 # @app.get("/Get_Director/{director}")
 # def Get_Director(director:str):
