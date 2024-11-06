@@ -241,23 +241,23 @@ async def Get_Director(director:str):
     return {"message":message}
 
 
-@app.get("/Recomendacion/{titulo}")
-def Recomendacion(titulo:str):
-    """
-    Input:
-    - Titulo de la película (str)
+# @app.get("/Recomendacion/{titulo}")
+# def Recomendacion(titulo:str):
+#     """
+#     Input:
+#     - Titulo de la película (str)
 
-    Output:
-    - Lista de películas recomendadas
-    """
-    lista_movies = recomendacion(titulo, cosine_sim, movies_filt)
+#     Output:
+#     - Lista de películas recomendadas
+#     """
+#     lista_movies = recomendacion(titulo, cosine_sim, movies_filt)
 
-    # for movie in funcion_ml:
-    # print(movie)
+#     # for movie in funcion_ml:
+#     # print(movie)
 
-    # if lista_movies == 0: 
-    #     return f"Error: Película '{titulo}' no encontrada en el dataset."
+#     # if lista_movies == 0: 
+#     #     return f"Error: Película '{titulo}' no encontrada en el dataset."
 
-    return {"message":lista_movies}
-#
+#     return {"message":lista_movies}
+# #
 
